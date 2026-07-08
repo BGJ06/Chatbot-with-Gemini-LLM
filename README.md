@@ -1,192 +1,172 @@
 # 🤖 WhatsApp Gemini AI Chatbot
 
-An intelligent AI-powered WhatsApp chatbot built with Google's Gemini AI, enabling seamless two-way conversations through WhatsApp using Twilio integration.
+An intelligent, AI-powered WhatsApp chatbot built with Google's Gemini LLM API, enabling seamless two-way automated conversations through WhatsApp using Twilio integration and real-time React web dashboard monitoring.
 
-## 📋 Description
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-v18.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-API-8E75C2?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
+[![Twilio](https://img.shields.io/badge/Twilio-API-F22F46?logo=twilio&logoColor=white)](https://www.twilio.com/)
 
-This project is a full-stack application that creates an AI-powered chatbot accessible through WhatsApp. It combines the power of Google's Gemini AI for intelligent responses with Twilio's WhatsApp API for message delivery, wrapped in a modern React-based web interface for monitoring and managing conversations.
+---
 
-### Key Features
+## 📋 Project Description
 
-- 🧠 **AI-Powered Responses**: Leverages Google Gemini AI for intelligent, context-aware conversations
-- 💬 **Two-Way Communication**: Full bidirectional messaging between WhatsApp and the web interface
-- 🌐 **Real-time Chat Interface**: Modern, responsive React frontend for monitoring conversations
-- 📱 **WhatsApp Integration**: Seamless integration with WhatsApp via Twilio API
-- 💾 **Message Persistence**: MongoDB database for storing conversation history
-- 🚀 **Easy Deployment**: Simple setup with environment variables and batch scripts
+This project is a full-stack WhatsApp chatbot application. It connects the **Google Gemini AI** language model for smart, context-aware conversational replies with the **Twilio WhatsApp API** for message routing. The system is backed by a Node.js + Express backend, utilizes a MongoDB database for persistent chat logs, and features a responsive React dashboard to inspect and manage chat sessions in real-time.
 
-## 🏗️ Architecture
+---
 
-### Backend (Node.js + Express)
-- RESTful API endpoints for message handling
-- Google Gemini AI integration for generating responses
-- Twilio API integration for WhatsApp messaging
-- MongoDB for data persistence
-- CORS-enabled for frontend communication
+## 🏗️ System Architecture & Message Flow
 
-### Frontend (React + Vite)
-- Modern, responsive chat interface
-- Real-time message display
-- Clean and intuitive user experience
-- Built with Vite for fast development and optimized builds
+The diagram below illustrates the message pipeline and data synchronization lifecycle when a patient or user interacts with the chatbot:
 
-## 🛠️ Tech Stack
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as WhatsApp User
+    participant Twilio as Twilio Gateway
+    participant Backend as Express API Server
+    participant Gemini as Google Gemini API
+    participant DB as MongoDB Database
+    participant Frontend as React Dashboard
 
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **AI Model**: Google Gemini AI
-- **Messaging**: Twilio WhatsApp API
-- **Database**: MongoDB with Mongoose ODM
-- **Environment Management**: dotenv
+    User->>Twilio: Sends WhatsApp Message
+    Twilio->>Backend: Forwards Webhook Payload (POST /api/messages/webhook)
+    activate Backend
+    Backend->>DB: Persists Incoming Message (Status: Received)
+    Backend->>Gemini: Generates Reply Prompt with Context
+    activate Gemini
+    Gemini-->>Backend: Returns AI Text Response
+    deactivate Gemini
+    Backend->>Twilio: Requests Outbound WhatsApp Delivery
+    Twilio-->>User: Delivers Response Message
+    Backend->>DB: Persists Outbound Message (Status: Sent)
+    Backend-->>Frontend: Dispatches Real-time Message Updates
+    deactivate Backend
+```
 
-### Frontend
-- **Framework**: React 18
-- **Build Tool**: Vite
-- **HTTP Client**: Axios
-- **Styling**: Modern CSS
+---
 
-## 📦 Installation
+## 🛠️ Tech Stack Details
+
+*   **Backend Runtime**: [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/) REST API routing.
+*   **LLM Model**: [Google Gemini AI (API)](https://ai.google.dev/) generating context-aware replies.
+*   **Gateway**: [Twilio WhatsApp Sandbox](https://www.twilio.com/docs/whatsapp/sandbox) handling webhook routing.
+*   **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose ODM](https://mongoosejs.com/) for persisting conversation logs.
+*   **Frontend**: [React 18](https://react.dev/) scaffolded with [Vite](https://vite.dev/) for high-speed builds.
+*   **CSS Style**: Clean, modern CSS layout with responsive grid.
+
+---
+
+## 📁 Repository Directory Structure
+
+```text
+whatsapp-gemini-chatbot/
+├── backend/
+│   ├── controllers/      # Handlers for webhooks and chat logs
+│   ├── models/          # Mongoose database schema models (Message, ChatSession)
+│   ├── routes/          # Express API route endpoints
+│   ├── server.js        # Server configurations, DB connection, and middleware
+│   ├── package.json     # Backend server dependencies
+│   └── .env             # Environment variables (Twilio, MongoDB, Gemini keys)
+├── frontend/
+│   ├── src/             # React codebase (components, hooks, layouts)
+│   ├── public/          # Static logos & favicon assets
+│   ├── package.json     # Web App packages
+│   └── vite.config.js   # Vite configuration settings
+├── start_app.bat        # Automated double-start script for Windows
+├── .gitignore           # Ignored files (locks, environment files, node_modules)
+└── README.md            # Project documentation (this file)
+```
+
+---
+
+## ⚙️ Installation & Setup Guide
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (local or cloud instance)
-- Twilio account with WhatsApp sandbox configured
-- Google Gemini API key
+*   [Node.js](https://nodejs.org/) (v16.0.0 or higher).
+*   [MongoDB Instance](https://www.mongodb.com/cloud/atlas) (local server or MongoDB Atlas URI).
+*   Active [Twilio Account](https://www.twilio.com/) with WhatsApp Sandbox enabled.
+*   Google API Key from [Google AI Studio](https://aistudio.google.com/).
 
-### Setup Steps
+### 1. Clone & Install
+```bash
+# Clone the repository
+git clone https://github.com/BGJ06/Chatbot-with-Gemini-LLM.git
+cd Chatbot-with-Gemini-LLM
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/BGJ06/Chatbot-with-Gemini-LLM.git
-   cd whatsapp-gemini-chatbot
-   ```
+# Install backend dependencies
+cd backend
+npm install
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   ```
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   ```
+### 2. Configure Environment variables
+Create a `.env` file in the `/backend` directory:
+```env
+PORT=5000
+GEMINI_API_KEY=your_gemini_api_key_here
+TWILIO_ACCOUNT_SID=your_twilio_account_sid_here
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+MONGODB_URI=your_mongodb_connection_string_here
+```
 
-4. **Environment Configuration**
-   
-   Create a `.env` file in the `backend` directory with the following variables:
-   ```env
-   PORT=5000
-   GEMINI_API_KEY=your_gemini_api_key_here
-   TWILIO_ACCOUNT_SID=your_twilio_account_sid
-   TWILIO_AUTH_TOKEN=your_twilio_auth_token
-   TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
-   MONGODB_URI=your_mongodb_connection_string
-   ```
+### 3. Expose Localhost Webhook (Important)
+Since Twilio needs a public URL to send incoming messages to your local Express server, you must set up a local port tunnel (e.g. using `ngrok`):
+```bash
+# Download ngrok, then expose port 5000 (Express port)
+ngrok http 5000
+```
+Copy the generated public HTTPS URL (e.g., `https://abcd-123.ngrok-free.app`) and configure it in your **Twilio Sandbox Settings** as the Webhook URL for incoming messages:
+`https://<your-ngrok-url>/api/messages/webhook`
 
-## 🚀 Usage
+---
 
-### Option 1: Manual Start
+## 🚀 Usage Instructions
 
-**Terminal 1 - Backend:**
+### Run Automated Windows Startup Script
+Double-click or run the provided batch script in the root directory:
+```bash
+start_app.bat
+```
+This script opens two terminal windows: one executing the Express backend server (port 5000) and another running the Vite dev server (port 5173).
+
+### Run Manually
+
+**Terminal 1 (Backend Server)**:
 ```bash
 cd backend
 npm start
 ```
 
-**Terminal 2 - Frontend:**
+**Terminal 2 (React Web Client)**:
 ```bash
 cd frontend
 npm run dev
 ```
-
-### Option 2: Automated Start (Windows)
-
-Simply run the provided batch script:
-```bash
-start_app.bat
-```
-
-This will automatically start both the backend server and frontend development server in separate terminal windows.
-
-## 📱 How It Works
-
-1. **User sends a WhatsApp message** to your Twilio WhatsApp number
-2. **Twilio forwards the message** to your backend webhook
-3. **Backend processes the message** and sends it to Google Gemini AI
-4. **Gemini generates an intelligent response** based on the conversation context
-5. **Backend sends the response** back to WhatsApp via Twilio
-6. **Frontend displays** the entire conversation in real-time
-
-## 🔧 Configuration
-
-### Twilio WhatsApp Setup
-1. Create a Twilio account at [twilio.com](https://www.twilio.com)
-2. Access the WhatsApp Sandbox
-3. Configure the webhook URL to point to your backend endpoint
-4. Add your Twilio credentials to the `.env` file
-
-### Google Gemini API
-1. Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Add the API key to your `.env` file
-
-### MongoDB
-1. Set up a MongoDB instance (local or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
-2. Add the connection string to your `.env` file
-
-## 📂 Project Structure
-
-```
-whatsapp-gemini-chatbot/
-├── backend/
-│   ├── controllers/      # Request handlers
-│   ├── models/          # MongoDB schemas
-│   ├── routes/          # API routes
-│   ├── server.js        # Main server file
-│   ├── package.json     # Backend dependencies
-│   └── .env            # Environment variables
-├── frontend/
-│   ├── src/            # React source files
-│   ├── public/         # Static assets
-│   ├── package.json    # Frontend dependencies
-│   └── vite.config.js  # Vite configuration
-├── start_app.bat       # Automated startup script
-├── .gitignore         # Git ignore rules
-└── README.md          # This file
-```
-
-## 🔐 Security Notes
-
-- Never commit your `.env` file to version control
-- Keep your API keys and tokens secure
-- Use environment variables for all sensitive data
-- Regularly rotate your API keys and tokens
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👨‍💻 Author
-
-**BGJ06**
-- GitHub: [@BGJ06](https://github.com/BGJ06)
-
-## 🙏 Acknowledgments
-
-- Google Gemini AI for providing the AI capabilities
-- Twilio for WhatsApp API integration
-- React and Vite teams for excellent development tools
-
-## 📞 Support
-
-For support, please open an issue in the GitHub repository or contact the maintainer.
+Open **`http://localhost:5173`** in your browser to inspect conversation logs in real-time.
 
 ---
 
-**Note**: This is a development project. For production deployment, ensure proper security measures, error handling, and scalability considerations are implemented.
+## 👨‍💻 Developer Credit
+
+This platform was developed and is maintained by:
+*   **Mithun Raj T** ([@BGJ06](https://github.com/BGJ06))
+
+---
+
+## 🙏 Acknowledgments
+
+*   **Google AI** for the Gemini API.
+*   **Twilio Dev Team** for the WhatsApp API sandbox.
+*   **React & Vite Communities** for frontend toolchains.
+
+---
+
+## 📝 License
+This project is licensed under the [MIT License](LICENSE).
